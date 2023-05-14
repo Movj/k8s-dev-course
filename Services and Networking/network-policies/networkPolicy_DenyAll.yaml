@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: NetworkPolicy
+metadata:
+  name: policy-denyall
+  namespace: test
+spec:
+  podSelector:
+    {}
+  policyTypes:
+  - Ingress
+  ingress:
+    []

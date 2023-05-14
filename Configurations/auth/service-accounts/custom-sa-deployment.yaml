@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: busybox-deployment
+  namespace: test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: busybox
+  template:
+    metadata:
+      labels:
+        app: busybox
+    spec:
+      serviceAccountName: my-sa-test
+      containers:
+      - name: busybox
+        image: busybox
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        args:
+          - /bin/sh
+          - -c
+          - touch /tmp/healthy; sleep 60; rm -rf /tmp/healthy; sleep  600

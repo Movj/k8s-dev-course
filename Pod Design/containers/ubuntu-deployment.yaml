@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ubuntu-deployment
+  namespace: my-ns
+spec:
+  replicas: 1
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app: ubuntu
+  template:
+    metadata:
+      labels:
+        app: ubuntu
+    spec:
+      hostname: ubuntu-test1
+      hostAliases:
+        - ip: "192.168.1.40"
+          hostnames:
+            - "mytest1.local"
+            - "mytest2.local"
+      subdomain: prod-support
+      containers:
+      - name: ubuntu-container
+        image: ubuntu
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        command: ["/bin/sh"]
+        args:
+        - "-c"
+        - "echo This is an array of args; while true; do echo .; sleep 1; done"
+        env:
+          - name: MYENVVAR
+            value: "This is a string"
+          - name: ENV2
+            value: "12345"

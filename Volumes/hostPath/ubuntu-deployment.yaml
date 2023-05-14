@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ubuntu-deployment
+  namespace: test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ubuntu
+  template:
+    metadata:
+      labels:
+        app: ubuntu
+    spec:
+      containers:
+        - name: ubuntu-container
+          image: ubuntu
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          command:
+            - "/bin/sh"
+          args:
+            - "-c"
+            - "echo The Pod is running; while true; do echo.; sleep 1; done"
+          volumeMounts:
+            - mountPath: /tmp/data
+              name: ubuntu-hostpath-storage
+      volumes:
+        - name: ubuntu-hostpath-storage
+          hostPath:
+            path: /tmp/hostpathDir
+            type: DirectoryOrCreate

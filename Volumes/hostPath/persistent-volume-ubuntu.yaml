@@ -1,0 +1,62 @@
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: testpv
+spec:
+  capacity:
+    storage: 300Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /tmp/pvcdir
+    type: DirectoryOrCreate
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: testpvc
+  namespace: test
+spec:
+  resources:
+    requests:
+      storage: 300Mi
+  accessModes:
+    - ReadWriteOnce
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ubuntu-deployment
+  namespace: test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ubuntu
+  template:
+    metadata:
+      labels:
+        app: ubuntu
+    spec:
+      containers:
+        - name: ubuntu-container
+          image: ubuntu
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          command:
+            - "/bin/sh"
+          args:
+            - "-c"
+            - "echo The Pod is running; while true; do echo.; sleep 1; done"
+          volumeMounts:
+            - mountPath: /tmp/data
+              name: ubuntu-pvc-storage
+      volumes:
+        - name: ubuntu-pvc-storage
+          persistentVolumeClaim:
+            claimName: testpvc

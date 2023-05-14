@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+  namespace: my-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - name: myapp-container
+        image: busybox
+        command: ["sh", "-c", "echo the app is running! && sleep 3600"]
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+      initContainers:
+        - name: init-nginx-svc
+          image: busybox
+          command: ['sh','-c','until nslookup nginx-svc; do echo waiting for nignx-svc; sleep 2; done;']
+        - name: init-db-svc
+          image: busybox
+          command: ['sh','-c','until nslookup db-svc; do echo waiting for db-svc; sleep 2; done;']

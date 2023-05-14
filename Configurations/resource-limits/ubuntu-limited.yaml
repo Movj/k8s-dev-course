@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ubuntu-deployment
+  namespace: test
+spec:
+  replicas: 1
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app: ubuntu
+  template:
+    metadata:
+      labels:
+        app: ubuntu
+    spec:
+      hostname: ubuntu-test1
+      containers:
+        - name: ubuntu-container
+          image: ubuntu
+          command: ["/bin/sh"]
+          args:
+            - "-c"
+            - "echo This is an array of args; while true; do echo .; sleep 1; done"
+          env:
+            - name: MYENVVAR
+              value: "This is a string"
+          resources:
+            requests:
+              memory: "64mi"
+              cpu: "0.25"
+            limits:
+              memory: "128Mi"
+              cpu: "500m" # it is the same as "0.5"

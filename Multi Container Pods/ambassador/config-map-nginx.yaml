@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-index-html1
+data:
+  index.html: <html><head><title>Welcome to Server 1!</title></head></html>
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-index-html2
+data:
+  index.html: <html><head><title>Welcome to Server 2!</title></head></html>
